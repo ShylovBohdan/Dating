@@ -12,6 +12,7 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
       <AppBar position="static">
         <Toolbar>
           <Tabs sx={{ flexGrow: 1 }}>
+            <Tab label="Home" component={Link} to="/home" />
             <Tab label="Dialogs" component={Link} to="/dialogs" />
             <Tab label="Search" component={Link} to="/search" />
             <Tab label="Settings" component={Link} to="/settings" />

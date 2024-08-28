@@ -7,6 +7,7 @@ import Profile from "./components/Profile";
 import Search from "./components/Search";
 import Settings from "./components/Settings";
 import SearchWithFilters from "./components/search/SearchWithFilter";
+import Home from "./components/Home";
 
 const App: React.FC = () => {
   return (
@@ -16,6 +17,7 @@ const App: React.FC = () => {
           <Route path="/dialogs" element={<DialogList />} />
           <Route path="/search" element={<SearchWithFilters />} />
           <Route path="/settings" element={<Settings />} />
+          <Route path="/home" element={<Home />} />
           <Route
             path="/profile"
             element={
