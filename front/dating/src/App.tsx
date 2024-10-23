@@ -1,41 +1,49 @@
-import React from "react";
+import React, { useState } from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import MainLayout from "./layouts/MainLayout";
-import Chat from "./components/Chat";
-import DialogList from "./components/DialogList";
-import Profile from "./components/Profile";
-import Search from "./components/Search";
-import Settings from "./components/Settings";
-import SearchWithFilters from "./components/search/SearchWithFilter";
 import Home from "./components/Home";
+import LandingPage from "./components/landing/LandingPage";
+import LoginPage from "./components/login/LoginPage";
+import SignupPage from "./components/signup/SignupPage";
+import ProtectedRoute from "./components/ProtectedRoute";
+import "./App.css";
 
 const App: React.FC = () => {
+  const [isAuthenticated, setIsAuthenticated] = useState(
+    !!localStorage.getItem("token") // Перевірка токена у localStorage для збереження стану
+  );
+
+  const updateAuthenticationState = (authenticated: boolean) => {
+    setIsAuthenticated(authenticated);
+  };
+
   return (
     <Router>
-      <MainLayout>
-        <Routes>
-          <Route path="/dialogs" element={<DialogList />} />
-          <Route path="/search" element={<SearchWithFilters />} />
-          <Route path="/settings" element={<Settings />} />
-          <Route path="/home" element={<Home />} />
-          <Route
-            path="/profile"
-            element={
-              <Profile
-                isAI={false}
-                user={{
-                  avatar: "",
-                  zodiac: "",
-                  birthdate: "",
-                  gender: "",
-                  preferences: "",
-                }}
-              />
-            }
-          />
-          <Route path="/chat" element={<Chat />} />
-        </Routes>
-      </MainLayout>
+      <Routes>
+        {/* Публічні сторінки */}
+        <Route path="/" element={<LandingPage />} />
+        <Route
+          path="/login"
+          element={
+            <LoginPage updateAuthenticationState={updateAuthenticationState} />
+          }
+        />
+        <Route path="/signup" element={<SignupPage />} />
+
+        {/* Захищені сторінки */}
+        <Route
+          path="/home"
+          element={
+            <ProtectedRoute isAuthenticated={isAuthenticated}>
+              <MainLayout updateAuthenticationState={updateAuthenticationState}>
+                <Home />
+              </MainLayout>
+            </ProtectedRoute>
+          }
+        />
+        {/* Інші захищені сторінки */}
+        {/* ... */}
+      </Routes>
     </Router>
   );
 };

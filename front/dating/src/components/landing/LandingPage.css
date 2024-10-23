@@ -1,0 +1,22 @@
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(50px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Інші стилі для компоненту, якщо потрібно */
+.fadeInAnimation {
+  animation: fadeIn 1.5s forwards;
+}
+
+/* Стилі для заголовків або інших елементів */
+h1,
+h2,
+h3 {
+  font-family: "Arial", sans-serif;
+}

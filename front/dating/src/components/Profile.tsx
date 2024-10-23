@@ -1,5 +1,5 @@
 import React from "react";
-import { Box, Typography, Avatar, Grid, Paper } from "@mui/material";
+import { Box, Typography, Avatar, Grid, Paper, Button } from "@mui/material";
 
 interface ProfileProps {
   isAI: boolean; // Для адаптивності
@@ -10,9 +10,10 @@ interface ProfileProps {
     gender: string;
     preferences: string;
   };
+  onLogout: () => void; // Додаємо функцію виходу через пропси
 }
 
-const Profile: React.FC<ProfileProps> = ({ isAI, user }) => {
+const Profile: React.FC<ProfileProps> = ({ isAI, user, onLogout }) => {
   return (
     <Box sx={{ p: 4 }}>
       <Paper
@@ -41,6 +42,17 @@ const Profile: React.FC<ProfileProps> = ({ isAI, user }) => {
             </Typography>
           </Grid>
         </Grid>
+        {/* Додаємо кнопку виходу */}
+        <Box sx={{ textAlign: "center", mt: 4 }}>
+          <Button
+            variant="contained"
+            color="error"
+            onClick={onLogout}
+            sx={{ width: "50%" }}
+          >
+            Вийти
+          </Button>
+        </Box>
       </Paper>
     </Box>
   );
