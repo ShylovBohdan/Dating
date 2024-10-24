@@ -1,9 +1,12 @@
+// src/pages/SignupPage.tsx
 import React from "react";
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
 import { Box, Button, Container, TextField, Typography } from "@mui/material";
-import axios from "axios";
+import { registerUser } from "../../requests/Auth";
+import { useNavigate } from "react-router-dom";
+import { useUserStore } from "../../store/UserStore";
 
 // Валідація форми за допомогою yup
 const schema = yup
@@ -29,32 +32,20 @@ const SignupPage = () => {
   } = useForm({
     resolver: yupResolver(schema),
   });
-
+  const signIn = useUserStore.getState().signIn;
+  const navigate = useNavigate();
   const onSubmit = async (data: any) => {
     try {
-      console.log(data);
-      // Виклик API для реєстрації користувача
-      const response = await axios.post("http://localhost:8000/api/register", {
-        name: data.name,
-        email: data.email,
-        password: data.password,
-      });
-
-      // Обробка відповіді від сервера
-      if (response.status === 201) {
-        console.log("User registered successfully", response.data);
-        // Можна виконати навігацію або відобразити повідомлення про успіх
-        alert("Registration successful!");
-      }
+      // Виклик функції реєстрації користувача
+      const { userRole, profile } = await registerUser(
+        data.name,
+        data.email,
+        data.password
+      );
+      signIn(profile, userRole);
+      navigate("/home");
     } catch (error: any) {
-      // Обробка помилок
-      console.error("Error during registration", error);
-      if (error.response && error.response.data) {
-        // Якщо сервер повернув помилку
-        alert(error.response.data.detail || "Registration failed");
-      } else {
-        alert("An unexpected error occurred");
-      }
+      alert("Invalid credentials");
     }
   };
 

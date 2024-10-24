@@ -86,7 +86,7 @@ const mockUsers = [
   },
 ];
 
-const SearchWithFilters: React.FC = () => {
+const Serf: React.FC = () => {
   const [isSearching, setIsSearching] = useState(false);
   const [currentUserIndex, setCurrentUserIndex] = useState(0);
 
@@ -143,4 +143,4 @@ const SearchWithFilters: React.FC = () => {
   );
 };
 
-export default SearchWithFilters;
+export default Serf;

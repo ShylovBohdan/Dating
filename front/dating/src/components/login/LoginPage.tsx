@@ -1,9 +1,12 @@
+// src/pages/LoginPage.tsx
 import React from "react";
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
 import { Box, Button, Container, TextField, Typography } from "@mui/material";
 import { useNavigate } from "react-router-dom";
+import { loginUser } from "../../requests/Auth";
+import { useUserStore } from "../../store/UserStore";
 
 const schema = yup
   .object({
@@ -15,37 +18,18 @@ const schema = yup
   })
   .required();
 
-const LoginPage = ({
-  updateAuthenticationState,
-}: {
-  updateAuthenticationState: (authenticated: boolean) => void;
-}) => {
+const LoginPage = () => {
   const navigate = useNavigate();
+  const signIn = useUserStore.getState().signIn;
   const handleLogin = async (data: any) => {
     try {
-      const response = await fetch("/api/login", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(data),
-      });
-
-      if (response.ok) {
-        const { token } = await response.json();
-        localStorage.setItem("token", token);
-        navigate("/home"); // Редирект на домашню сторінку після успішного логіну
-      } else {
-        alert("Invalid credentials");
-      }
-    } catch (error) {
+      const { userRole, profile } = await loginUser(data.email, data.password);
+      signIn(profile, userRole);
+      navigate("/home");
+    } catch (error: any) {
       console.error("Login failed:", error);
+      alert("Invalid credentials");
     }
-  };
-
-  const onLogin = async (data: any) => {
-    await handleLogin(data);
-    updateAuthenticationState(!!localStorage.getItem("token")); // Оновлюємо стан аутентифікації
   };
 
   const {
@@ -57,7 +41,7 @@ const LoginPage = ({
   });
 
   const onSubmit = (data: any) => {
-    onLogin(data); // Викликаємо функцію логіну
+    handleLogin(data);
   };
 
   return (

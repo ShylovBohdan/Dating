@@ -1,19 +1,10 @@
 import React from "react";
 import { Box, Typography, Avatar, Grid, Paper, Button } from "@mui/material";
+import { useUserStore } from "../store/UserStore";
 
-interface ProfileProps {
-  isAI: boolean; // Для адаптивності
-  user: {
-    avatar: string;
-    zodiac: string;
-    birthdate: string;
-    gender: string;
-    preferences: string;
-  };
-  onLogout: () => void; // Додаємо функцію виходу через пропси
-}
-
-const Profile: React.FC<ProfileProps> = ({ isAI, user, onLogout }) => {
+const Profile: React.FC = () => {
+  const onLogout = useUserStore.getState().signOut;
+  const profile = useUserStore.getState().userProfile;
   return (
     <Box sx={{ p: 4 }}>
       <Paper
@@ -27,19 +18,19 @@ const Profile: React.FC<ProfileProps> = ({ isAI, user, onLogout }) => {
             sm={4}
             sx={{ display: "flex", justifyContent: "center" }}
           >
-            <Avatar
+            {/* <Avatar
               alt="User Avatar"
-              src={user.avatar}
+              src={profile.avatar}
               sx={{ width: 128, height: 128 }}
-            />
+            /> */}
           </Grid>
           <Grid item xs={12} sm={8}>
-            <Typography variant="h6">Zodiac: {user.zodiac}</Typography>
-            <Typography variant="body1">Birthdate: {user.birthdate}</Typography>
-            <Typography variant="body1">Gender: {user.gender}</Typography>
-            <Typography variant="body1">
-              Preferences: {user.preferences}
+            <Typography variant="h6">
+              Horoscope: {profile?.horoscope}
             </Typography>
+            <Typography variant="body1">Age: {profile?.age}</Typography>
+            <Typography variant="body1">Gender: {profile?.gender}</Typography>
+            <Typography variant="body1">Hobbies: {profile?.hobbies}</Typography>
           </Grid>
         </Grid>
         {/* Додаємо кнопку виходу */}

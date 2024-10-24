@@ -9,24 +9,22 @@ import {
   Button,
 } from "@mui/material";
 import { Link, useNavigate } from "react-router-dom";
+import { useUserStore } from "../store/UserStore";
 
 interface MainLayoutProps {
   children: ReactNode;
-  updateAuthenticationState: (authenticated: boolean) => void;
 }
 
-const MainLayout: React.FC<MainLayoutProps> = ({
-  children,
-  updateAuthenticationState,
-}) => {
+const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
   const navigate = useNavigate();
   const handleLogout = () => {
-    localStorage.removeItem("token");
+    localStorage.removeItem("access_token");
     navigate("/login"); // Редирект на сторінку входу після логауту
   };
+  const logout = useUserStore.getState().signOut;
   const onLogout = () => {
     handleLogout();
-    updateAuthenticationState(false); // Оновлюємо стан після логауту
+    logout();
   };
   return (
     <>
@@ -36,6 +34,7 @@ const MainLayout: React.FC<MainLayoutProps> = ({
             <Tab label="Home" component={Link} to="/home" />
             <Tab label="Dialogs" component={Link} to="/dialogs" />
             <Tab label="Search" component={Link} to="/search" />
+            <Tab label="Serf" component={Link} to="/serf" />
             <Tab label="Settings" component={Link} to="/settings" />
             <Tab label="Chat" component={Link} to="/chat" />
           </Tabs>

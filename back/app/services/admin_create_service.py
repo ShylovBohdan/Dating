@@ -1,5 +1,5 @@
-from back.app.models.user import User
-from back.app.services.user_service import hash_password
+from app.models.user import User
+from app.services.user_service import hash_password
 
 
 async def create_admin(name: str, email: str, password: str):

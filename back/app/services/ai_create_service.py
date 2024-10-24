@@ -1,8 +1,8 @@
 from app.models.user import User
 
-from back.app.models.profile.ai_profile import AIProfile
-from back.app.models.profile.profile import Profile
-from back.app.services.user_service import hash_password
+from app.models.profile.ai_profile import AIProfile
+from app.models.profile.profile import Profile
+from app.services.user_service import hash_password
 
 async def create_ai_user(name: str, email: str, password: str):
     hashed_password = hash_password(password)
