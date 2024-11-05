@@ -12,62 +12,93 @@ import {
   Checkbox,
   FormControlLabel,
 } from "@mui/material";
+import { useNavigate } from "react-router-dom";
+import axios from "axios";
+import { API_URL } from "../config/Api";
+import ChatIcon from "@mui/icons-material/Chat";
 
 // Інтерфейс для користувача
-interface User {
-  id: number;
-  name: string;
-  isAI: boolean;
-  avatar: string;
-  description: string;
-  gender?: string; // Необов'язкове поле, для використання фільтру за статтю
+interface UserProfile {
+  _id: string | null;
+  profile_type: string;
+  user_profile: {
+    created_at: string;
+    age: number | null;
+    gender: string | null;
+    horoscope: string | null;
+    hobbies: string[];
+  };
+  ai_profile: any; // Можна уточнити тип
 }
 
-const Search: React.FC = () => {
+interface User {
+  _id: string;
+  username: string;
+  email: string;
+  role: string;
+  created_at: string;
+  profile: UserProfile | null;
+}
+
+const SearchPage: React.FC = () => {
   const [searchTerm, setSearchTerm] = useState("");
-  const [filteredResults, setFilteredResults] = useState<User[]>([]);
+  const [users, setUsers] = useState<User[]>([]);
+  const [filteredUsers, setFilteredUsers] = useState<User[]>([]);
   const [onlyHumans, setOnlyHumans] = useState(false);
   const [onlyFemales, setOnlyFemales] = useState(false);
+  const [onlyMales, setOnlyMales] = useState(false);
+  const [onlyAi, setOnlyAi] = useState(false);
+  const navigate = useNavigate();
 
-  // Мокові дані користувачів
-  const mockUsers: User[] = [
-    {
-      id: 1,
-      name: "John Doe",
-      isAI: false,
-      avatar: "/path-to-avatar1.jpg",
-      description: "Human, 29 years old.",
-    },
-    {
-      id: 2,
-      name: "Jane AI",
-      isAI: true,
-      avatar: "/path-to-avatar2.jpg",
-      description: "AI Version 1.5.",
-      gender: "female",
-    },
-    // Додаткові дані
-  ];
+  const fetchUsers = async () => {
+    try {
+      const response = await axios.get(`${API_URL}/user/`);
+      setUsers(response.data);
+      setFilteredUsers(response.data);
+    } catch (error) {
+      console.error("Error fetching users:", error);
+    }
+  };
+  useEffect(() => {
+    fetchUsers();
+  }, []);
 
   const handleSearch = () => {
-    const results = mockUsers.filter((user) => {
-      let matchesSearch = user.name
+    const filteredResults = users.filter((user) => {
+      let matchesSearch = user.username
         .toLowerCase()
         .includes(searchTerm.toLowerCase());
-      if (onlyHumans && user.isAI) return false;
-      if (onlyFemales && user.gender !== "female") return false;
+      if (onlyHumans && user?.profile?.profile_type !== "user") return false;
+      if (onlyAi && user?.profile?.profile_type !== "ai") return false;
+      if (
+        onlyFemales &&
+        ((user?.profile?.profile_type === "user" &&
+          user?.profile?.user_profile.gender !== "female") ||
+          user?.profile?.profile_type !== "user")
+      )
+        return false;
+      if (
+        onlyMales &&
+        ((user?.profile?.profile_type === "user" &&
+          user?.profile?.user_profile.gender !== "male") ||
+          user?.profile?.profile_type !== "user")
+      )
+        return false;
       return matchesSearch;
     });
-    setFilteredResults(results);
+    setFilteredUsers(filteredResults);
   };
 
-  // Дебаунсер для пошуку
   useEffect(() => {
     const timer = setTimeout(() => {
       handleSearch();
     }, 500);
     return () => clearTimeout(timer);
-  }, [searchTerm, onlyHumans, onlyFemales]);
+  }, [searchTerm, onlyHumans, onlyFemales, onlyMales, onlyAi]);
+
+  const handleInitiateChat = (userId: string) => {
+    navigate(`/chat/${userId}`);
+  };
 
   return (
     <Box sx={{ p: 2 }}>
@@ -94,11 +125,29 @@ const Search: React.FC = () => {
           <FormControlLabel
             control={
               <Checkbox
+                checked={onlyAi}
+                onChange={(e) => setOnlyAi(e.target.checked)}
+              />
+            }
+            label="Only AI"
+          />
+          <FormControlLabel
+            control={
+              <Checkbox
                 checked={onlyFemales}
                 onChange={(e) => setOnlyFemales(e.target.checked)}
               />
             }
             label="Only Females"
+          />
+          <FormControlLabel
+            control={
+              <Checkbox
+                checked={onlyMales}
+                onChange={(e) => setOnlyMales(e.target.checked)}
+              />
+            }
+            label="Only Males"
           />
         </Grid>
         <Grid item xs={12}>
@@ -109,10 +158,24 @@ const Search: React.FC = () => {
       </Grid>
 
       <List sx={{ mt: 2 }}>
-        {filteredResults.map((user) => (
-          <ListItem key={user.id}>
-            <Avatar src={user.avatar} sx={{ mr: 2, width: 56, height: 56 }} />
-            <ListItemText primary={user.name} secondary={user.description} />
+        {filteredUsers.map((user) => (
+          <ListItem key={user._id}>
+            <Avatar
+              alt="User Avatar"
+              src={"path/to/default/avatar.jpg"}
+              sx={{ mr: 2, width: 56, height: 56 }}
+            />
+            <ListItemText
+              primary={user.username}
+              secondary={"Some funny text"}
+            />
+            <IconButton
+              edge="end"
+              aria-label="chat"
+              onClick={() => handleInitiateChat(user._id)}
+            >
+              <ChatIcon />
+            </IconButton>
           </ListItem>
         ))}
       </List>
@@ -120,4 +183,4 @@ const Search: React.FC = () => {
   );
 };
 
-export default Search;
+export default SearchPage;

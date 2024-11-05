@@ -25,6 +25,7 @@
     "react-router-dom": "^6.26.1",
     "react-scripts": "5.0.1",
     "typescript": "^4.9.5",
+    "uuid": "^11.0.2",
     "web-vitals": "^2.1.4",
     "yup": "^1.4.0",
     "zustand": "^4.5.5"
@@ -52,5 +53,8 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
+  },
+  "devDependencies": {
+    "@types/jwt-decode": "^2.2.1"
   }
 }

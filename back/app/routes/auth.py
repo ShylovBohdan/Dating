@@ -15,7 +15,7 @@ async def register_user(user_data: UserCreate):
     if existing_user:
         raise HTTPException(status_code=400, detail="Email already registered")
     
-    new_user = await create_user(user_data.name,user_data.email,user_data.password,'user')
+    new_user = await create_user(user_data.name,user_data.email,user_data.password,user_data.age,user_data.gender,user_data.horoscope,user_data.hobbies)
     access_token = create_access_token(data={"user_id": str(new_user.id),"role":str(new_user.role)}, expires_delta=timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES))
     refresh_token = create_refresh_token(data={"user_id": str(new_user.id)})
 

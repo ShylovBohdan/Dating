@@ -10,13 +10,11 @@ pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 def hash_password(password: str) -> str:
     return pwd_context.hash(password)
 
-async def create_user(name: str, email: str, password: str,role:str):
+async def create_user(name: str, email: str, password: str, age: int, gender: str, horoscope: str, hobbies: list[str]):
     hashed_password = hash_password(password)
-    user_profile = UserProfile(age=None, gender=None, horoscope=None, hobbies=[])
+    user_profile = UserProfile(age=age, gender=gender, horoscope=horoscope, hobbies=hobbies)
     profile = Profile(profile_type="user", user_profile=user_profile)
-    
-    # Перевірка перед збереженням профілю
     profile.save_profile()
-    user = User(username=name, email=email, hashed_password=hashed_password, profile=profile,role=role)
+    user = User(username=name, email=email, hashed_password=hashed_password, profile=profile, role="user")
     await user.insert()
     return user

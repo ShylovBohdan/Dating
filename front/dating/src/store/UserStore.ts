@@ -13,6 +13,7 @@ interface UserState {
   role: string;
   signIn: (profile: any, role: string) => void;
   signOut: () => void;
+  setUserProfile: (profile: UserProfile) => void;
   setIsAuthenticated: (isAuthenticated: boolean) => void;
 }
 
@@ -23,6 +24,7 @@ export const useUserStore = create<UserState>((set) => ({
   signIn: (profile, role) =>
     set({ isAuthenticated: true, userProfile: profile, role: role }),
   signOut: () => set({ isAuthenticated: false, userProfile: null, role: "" }),
+  setUserProfile: (profile) => set({ userProfile: profile }),
   setIsAuthenticated: (isAuthenticated) =>
     set({ isAuthenticated: isAuthenticated }),
 }));

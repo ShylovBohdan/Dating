@@ -12,7 +12,7 @@ import { useUserStore } from "./store/UserStore";
 import DialogList from "./components/DialogList";
 import Search from "./components/Search";
 import Settings from "./components/Settings";
-import Chat from "./components/Chat";
+import Chat from "./components/ChatPage";
 import Profile from "./components/Profile";
 import Serf from "./components/search/Serf";
 
@@ -48,6 +48,16 @@ const App: React.FC = () => {
           }
         />
         <Route
+          path="/chat/:partnerId"
+          element={
+            <ProtectedRoute allowAllRegistered={true} userRole={""}>
+              <MainLayout>
+                <Chat />
+              </MainLayout>
+            </ProtectedRoute>
+          }
+        />
+        <Route
           path="/search"
           element={
             <ProtectedRoute allowAllRegistered={true} userRole={""}>
@@ -63,16 +73,6 @@ const App: React.FC = () => {
             <ProtectedRoute allowAllRegistered={true} userRole={""}>
               <MainLayout>
                 <Settings />
-              </MainLayout>
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path="/chat"
-          element={
-            <ProtectedRoute allowAllRegistered={true} userRole={""}>
-              <MainLayout>
-                <Chat />
               </MainLayout>
             </ProtectedRoute>
           }
@@ -102,16 +102,11 @@ const App: React.FC = () => {
         <Route
           path="/admin"
           element={
-            <ProtectedRoute
-              userRole={userRole} // Важливо передати роль користувача
-              requiredRole="admin" // Доступ тільки для ролі "admin"
-            >
+            <ProtectedRoute userRole={userRole} requiredRole="admin">
               <AdminPage />
             </ProtectedRoute>
           }
         />
-        {/* Інші захищені сторінки */}
-        {/* ... */}
       </Routes>
     </Router>
   );

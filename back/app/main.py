@@ -1,4 +1,5 @@
-from fastapi import FastAPI
+import subprocess
+from fastapi import FastAPI, Request
 from app.routes import router
 from app.database.mongo import init as init_db
 from fastapi.middleware.cors import CORSMiddleware
@@ -35,3 +36,17 @@ app.include_router(router, prefix="/api")
 @app.get("/")
 async def root():
     return {"message": "Welcome to the EmberMate API"}
+
+@app.post("/webhook")
+async def handle_webhook(request: Request):
+    # Отримуємо інформацію про гілку, до якої було зроблено коміт
+    data = await request.json()
+    branch = data['ref'].split('/')[-1]
+
+    # Оновлюємо відповідне середовище
+    if branch == 'master':
+        subprocess.run(['./update_production.sh'], shell=True)
+    elif branch == 'development':
+        subprocess.run(['./update_staging.sh'], shell=True)
+
+    return {"status": "OK"}

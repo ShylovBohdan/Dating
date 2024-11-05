@@ -19,7 +19,7 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
   const navigate = useNavigate();
   const handleLogout = () => {
     localStorage.removeItem("access_token");
-    navigate("/login"); // Редирект на сторінку входу після логауту
+    navigate("/"); // Редирект на сторінку входу після логауту
   };
   const logout = useUserStore.getState().signOut;
   const onLogout = () => {
@@ -36,7 +36,7 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
             <Tab label="Search" component={Link} to="/search" />
             <Tab label="Serf" component={Link} to="/serf" />
             <Tab label="Settings" component={Link} to="/settings" />
-            <Tab label="Chat" component={Link} to="/chat" />
+            {/* <Tab label="Chat" component={Link} to="/chat" /> */}
           </Tabs>
           <IconButton component={Link} to="/profile">
             <Avatar alt="User Avatar" src="/path-to-avatar.jpg" />

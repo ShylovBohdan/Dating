@@ -6,19 +6,27 @@ import { jwtDecode } from "jwt-decode";
 interface DecodedRoleToken {
   role: string;
 }
-interface DecodedIdToken {
+export interface DecodedIdToken {
   user_id: string;
 }
 
 export const registerUser = async (
   name: string,
   email: string,
-  password: string
+  password: string,
+  age: number,
+  gender: string,
+  horoscope: string,
+  hobbies: string[]
 ) => {
   const response = await axios.post(`${API_URL}/register`, {
     name,
     email,
     password,
+    age,
+    gender,
+    horoscope,
+    hobbies,
   });
   const { access_token, refresh_token } = response.data;
   const decodedRole: DecodedRoleToken = jwtDecode(access_token);
@@ -60,4 +68,27 @@ export const getProfile = async (id: string) => {
   });
   const { profile } = response.data;
   return profile;
+};
+export const getProfileFromJwt = async () => {
+  const jwt = localStorage.getItem("access_token");
+  if (jwt) {
+    const decodedId: DecodedIdToken = jwtDecode(jwt);
+    const id = decodedId.user_id;
+    const response = await axios.post(`${API_URL}/profile`, {
+      user_id: id,
+    });
+    const profile = response.data;
+    const { setUserProfile } = useUserStore.getState();
+    setUserProfile(profile);
+    return profile;
+  }
+};
+export const getId = () => {
+  const jwt = localStorage.getItem("access_token");
+  if (jwt) {
+    const decodedId: DecodedIdToken = jwtDecode(jwt);
+    const id = decodedId.user_id;
+    return id;
+  }
+  return null;
 };
